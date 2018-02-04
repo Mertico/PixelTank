@@ -1,6 +1,12 @@
 # PixelTank
 Pet-project.
 
+## Docs
+
+[Пояснительня записка][1]
+
+[1]: https://docs.google.com/document/d/1uzHMWpqd1MHxMHRABPfHjbV0-8PezXRKPvwEwFB1-_A
+
 ## Directory
 ```
 .
