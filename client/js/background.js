@@ -2,9 +2,9 @@
 function Background() {
   ctxbg.save();
   //Camera();
-  if(scale != 1) ctxbg.scale(scale, scale);
-  let roundedX = (0.5 + -vision.center.x+bg.width/2/scale) | 0;
-  let roundedY = (0.5 + -vision.center.y+bg.height/2/scale) | 0;
+  if(Data.scale != 1) ctxbg.scale(Data.scale, Data.scale);
+  let roundedX = (0.5 + -Data.vision.center.x+bg.width/2/Data.scale) | 0;
+  let roundedY = (0.5 + -Data.vision.center.y+bg.height/2/Data.scale) | 0;
   ctxbg.translate(roundedX, roundedY);
 
   for (var x = -2560; x < 2560; x += 256) {

@@ -2,14 +2,17 @@
 
 var cd = [];
 
+
+// Уменьшение перезарядки
 setInterval(function () {
   for(var i = 0; i < cd.length; i++) {
     cd[i].time-=1/30;
-    if(cd[i].time <= 0) cd.splice(i, 1);
+    if(cd[i].time <= 0)
+      cd.splice(i, 1);
   }
 }, 1000/30);
 
-// Добавление статистики игрока по ид пользователя
+// Добавление перезарядка игрока по ид пользователя
 exports.add = function(id, time) {
   cd.unshift({
     id,

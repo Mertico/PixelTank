@@ -1,62 +1,62 @@
 //Модуль апроксимации
 function Approximation() {
   // Полет снарядов
-  for(var bi = 0, bl = server.bullets.length; bi < bl; bi++) {
-    if (IsVisible(server.bullets[bi].x-12.5, server.bullets[bi].y-12.,25,25)) {
+  for(var bi = 0, bl = Data.server.bullets.length; bi < bl; bi++) {
+    if (IsVisible(Data.server.bullets[bi].x-12.5, Data.server.bullets[bi].y-12.,25,25)) {
       // Передвижение снаряда на величину скорости
-      server.bullets[bi].x +=(dt*BULLET_SPEED)*Math.cos(server.bullets[bi].angle);
-      server.bullets[bi].y +=(dt*BULLET_SPEED)*Math.sin(server.bullets[bi].angle);
-      server.bullets[bi].x = ((0.5 + server.bullets[bi].x*10) | 0)/10;
-      server.bullets[bi].y = ((0.5 + server.bullets[bi].y*10) | 0)/10;
+      Data.server.bullets[bi].x +=(dt*Data.BULLET_SPEED)*Math.cos(Data.server.bullets[bi].angle);
+      Data.server.bullets[bi].y +=(dt*Data.BULLET_SPEED)*Math.sin(Data.server.bullets[bi].angle);
+      Data.server.bullets[bi].x = ((0.5 + Data.server.bullets[bi].x*10) | 0)/10;
+      Data.server.bullets[bi].y = ((0.5 + Data.server.bullets[bi].y*10) | 0)/10;
     }
   }
   // Передвижение танка
-  for(var ui = 0, ul = server.users.length; ui < ul; ui++) {
-    if (server.users[ui].id == server.id) {
+  for(var ui = 0, ul = Data.server.users.length; ui < ul; ui++) {
+    if (Data.server.users[ui].id == Data.server.id) {
       // Обновление данных о направление орудия
-      //server.users[ui].turret.angle = mouse.angle;
-      server.users[ui].turret.angle = RotateTurret(server.users[ui].turret.angle,control.mouse.angle,(dt*tank[server.users[ui].tank].turret.angle*Math.PI/180));
+      //Data.server.users[ui].turret.angle = mouse.angle;
+      Data.server.users[ui].turret.angle = RotateTurret(Data.server.users[ui].turret.angle,Data.control.mouse.angle,(dt*Data.tank[Data.server.users[ui].tank].turret.angle*Math.PI/180));
       // Вычисление изменений скорости
-      if(control.key.w) {
-        server.users[ui].speed += (dt*tank[server.users[ui].tank].acceleration*ac(server.users[ui].speed,tank[server.users[ui].tank].max_speed));
-        if (server.users[ui].speed > tank[server.users[ui].tank].max_speed) server.users[ui].speed = tank[server.users[ui].tank].max_speed;
+      if(Data.control.key.w) {
+        Data.server.users[ui].speed += (dt*Data.tank[Data.server.users[ui].tank].acceleration*ac(Data.server.users[ui].speed,Data.tank[Data.server.users[ui].tank].max_speed));
+        if (Data.server.users[ui].speed > Data.tank[Data.server.users[ui].tank].max_speed) Data.server.users[ui].speed = Data.tank[Data.server.users[ui].tank].max_speed;
       }
-      if(control.key.s) {
-        server.users[ui].speed -= (dt*tank[server.users[ui].tank].acceleration*0.6*ac(server.users[ui].speed,tank[server.users[ui].tank].max_speed));
-        if (server.users[ui].speed < -tank[server.users[ui].tank].max_speed*0.3) server.users[ui].speed = -tank[server.users[ui].tank].max_speed*0.3;
+      if(Data.control.key.s) {
+        Data.server.users[ui].speed -= (dt*Data.tank[Data.server.users[ui].tank].acceleration*0.6*ac(Data.server.users[ui].speed,Data.tank[Data.server.users[ui].tank].max_speed));
+        if (Data.server.users[ui].speed < -Data.tank[Data.server.users[ui].tank].max_speed*0.3) Data.server.users[ui].speed = -Data.tank[Data.server.users[ui].tank].max_speed*0.3;
       }
-      if((!control.key.s || server.users[ui].speed > 0) && !control.key.w) {
-        if (server.users[ui].speed < 10 && server.users[ui].speed > -10) {
-          server.users[ui].speed = 0;
+      if((!Data.control.key.s || Data.server.users[ui].speed > 0) && !Data.control.key.w) {
+        if (Data.server.users[ui].speed < 10 && Data.server.users[ui].speed > -10) {
+          Data.server.users[ui].speed = 0;
         }
-        if (server.users[ui].speed <= -10) {
-          server.users[ui].speed += (dt*tank[server.users[ui].tank].acceleration*3*ac(server.users[ui].speed,server.users[ui].max_speed));
+        if (Data.server.users[ui].speed <= -10) {
+          Data.server.users[ui].speed += (dt*Data.tank[Data.server.users[ui].tank].acceleration*3*ac(Data.server.users[ui].speed,Data.server.users[ui].max_speed));
         }
-        if (server.users[ui].speed >= 10) {
-          server.users[ui].speed -= (dt*tank[server.users[ui].tank].acceleration*3*ac(server.users[ui].speed,server.users[ui].max_speed));
+        if (Data.server.users[ui].speed >= 10) {
+          Data.server.users[ui].speed -= (dt*Data.tank[Data.server.users[ui].tank].acceleration*3*ac(Data.server.users[ui].speed,Data.server.users[ui].max_speed));
         }
       }
 
       // Поворот танка
-      if(control.key.a) server.users[ui].chassis.angle -= (dt*tank[server.users[ui].tank].chassis.angle*Math.PI/180*ac(server.users[ui].speed,tank[server.users[ui].tank].max_speed));
-      if(control.key.d) server.users[ui].chassis.angle += (dt*tank[server.users[ui].tank].chassis.angle*Math.PI/180*ac(server.users[ui].speed,tank[server.users[ui].tank].max_speed));
+      if(Data.control.key.a) Data.server.users[ui].chassis.angle -= (dt*Data.tank[Data.server.users[ui].tank].chassis.angle*Math.PI/180*ac(Data.server.users[ui].speed,Data.tank[Data.server.users[ui].tank].max_speed));
+      if(Data.control.key.d) Data.server.users[ui].chassis.angle += (dt*Data.tank[Data.server.users[ui].tank].chassis.angle*Math.PI/180*ac(Data.server.users[ui].speed,Data.tank[Data.server.users[ui].tank].max_speed));
 
-      vision.start.x = server.users[ui].x-game.width/2/scale;
-      vision.start.y = server.users[ui].y-game.width/2/scale;
-      vision.center.x = server.users[ui].x;
-      vision.center.y = server.users[ui].y;
-      vision.end.x = server.users[ui].x+game.width/2/scale;
-      vision.end.y = server.users[ui].y+game.height/2/scale;
+      Data.vision.start.x = Data.server.users[ui].x-game.width/2/Data.scale;
+      Data.vision.start.y = Data.server.users[ui].y-game.width/2/Data.scale;
+      Data.vision.center.x = Data.server.users[ui].x;
+      Data.vision.center.y = Data.server.users[ui].y;
+      Data.vision.end.x = Data.server.users[ui].x+game.width/2/Data.scale;
+      Data.vision.end.y = Data.server.users[ui].y+game.height/2/Data.scale;
     }
-    if (IsVisible(server.users[ui].x-40, server.users[ui].y-40,80,80)) {
+    if (IsVisible(Data.server.users[ui].x-40, Data.server.users[ui].y-40,80,80)) {
       // Передвижение танка на величину скорости
-      server.users[ui].x +=(dt*server.users[ui].speed)*Math.cos(server.users[ui].chassis.angle);
-      server.users[ui].y +=(dt*server.users[ui].speed)*Math.sin(server.users[ui].chassis.angle);
+      Data.server.users[ui].x +=(dt*Data.server.users[ui].speed)*Math.cos(Data.server.users[ui].chassis.angle);
+      Data.server.users[ui].y +=(dt*Data.server.users[ui].speed)*Math.sin(Data.server.users[ui].chassis.angle);
       // Граница карты
-      if(server.users[ui].x > 2560) server.users[ui].x = 2560;
-      if(server.users[ui].y > 2560) server.users[ui].y = 2560;
-      if(server.users[ui].x < -2560) server.users[ui].x = -2560;
-      if(server.users[ui].y < -2560) server.users[ui].y = -2560;
+      if(Data.server.users[ui].x > 2560) Data.server.users[ui].x = 2560;
+      if(Data.server.users[ui].y > 2560) Data.server.users[ui].y = 2560;
+      if(Data.server.users[ui].x < -2560) Data.server.users[ui].x = -2560;
+      if(Data.server.users[ui].y < -2560) Data.server.users[ui].y = -2560;
     }
   }
 }

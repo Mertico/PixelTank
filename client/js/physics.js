@@ -51,8 +51,8 @@ function addTank(id,tank,x,y,angle) {
 
 function addTanks() {
   removeWorld();
-  for(var ui = 0, ul = server.users.length; ui < ul; ui++) {
-    addTank(server.users[ui].id,server.users[ui].tank,server.users[ui].x,server.users[ui].y,server.users[ui].chassis.angle);
+  for(var ui = 0, ul = Data.server.users.length; ui < ul; ui++) {
+    addTank(Data.server.users[ui].id,Data.server.users[ui].tank,Data.server.users[ui].x,Data.server.users[ui].y,Data.server.users[ui].chassis.angle);
   }
 }
 

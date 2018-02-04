@@ -7,12 +7,22 @@ var gulp = require('gulp'),                          // Сообственно G
 
 // Run server
 gulp.task('server', function() {
-  nodemon({
+  var serverStream = nodemon({
+    nodemon: require('nodemon'),
     script: './server/server.js',
+    watch: './server/',
   })
   .on('start', function() {
     //bot.restart();
+    console.log('Start server!')
     reload();
+  })
+  .on('restart', function () {
+    console.log('Server restarted!')
+  })
+  .on('crash', function() {
+    console.error('Server has crashed!\n')
+    serverStream.emit('restart', 3)  // restart the server in 3 seconds 
   })
 })
 

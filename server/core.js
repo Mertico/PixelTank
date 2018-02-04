@@ -11,6 +11,8 @@ var Bullet = require('./modules/bullet');
 var User = require('./modules/user');
 var Core = require('./core');
 
+
+// Границы карты
 Physics.addBorder( 0, 2530,Math.PI); // bottom
 Physics.addBorder(-2560, 0,-Math.PI/2); // left
 Physics.addBorder( 2530, 0,Math.PI/2); // right
@@ -19,12 +21,16 @@ Physics.addBorder( 0,-2560,0); // top
 
 var LastRefTime = process.hrtime();
 setInterval(function Refresh() {
+
+  // Расчет разницы во времени между кадрами (В секундах)
   let NowRefTime = process.hrtime();
   let delta = ((NowRefTime[0]-LastRefTime[0]) + (NowRefTime[1]-LastRefTime[1])/1000000000);
   LastRefTime=NowRefTime;
+
   // Полет снарядов
   Bullet.move(delta);
 
+  // Полчуние информации об игроках и снарядов
   var bullets = Bullet.getList();
   var users = User.getList();
 

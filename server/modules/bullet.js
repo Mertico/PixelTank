@@ -18,8 +18,11 @@ exports.move = function(delta) {
     // Передвижение снаряда на величину скорости
     bullet[bi].x +=delta*Config.BULLET_SPEED*Math.cos(bullet[bi].angle);
     bullet[bi].y +=delta*Config.BULLET_SPEED*Math.sin(bullet[bi].angle);
+    // Уменьшение времени жизни снаряда
     bullet[bi].life -=delta;
-    if(bullet[bi].life < 0) bullet.splice(bi, 1);
+    // Удаление снарядов которые пролетели больше необходимого
+    if(bullet[bi].life < 0)
+      bullet.splice(bi, 1);
   }
 }
 

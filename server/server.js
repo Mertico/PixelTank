@@ -52,7 +52,7 @@ io.on('connection', function (socket) {
     // Вывод в лог информации о новом игроке
     console.log('Join new client: ' + socket.id);
     // Отправка данных соединения
-    socket.emit('init', {tank: Config.tank,stats: Stats.get,bs: Config.BULLET_SPEED});
+    socket.emit('init', {tank: Config.tank, stats: Stats.get, bs: Config.BULLET_SPEED});
     // Добавление данных нового пользователя
     User.add(socket.id,m.name,m.tank);
     Stats.add(socket.id);

@@ -13,8 +13,8 @@ function Radar() {
   //Данные об игроке
   let angle;
   let x,y;
-  server.users.forEach(function (value, index) {
-    if (value.id == server.id) {
+  Data.server.users.forEach(function (value, index) {
+    if (value.id == Data.server.id) {
       angle = value.turret.angle;
       x = value.x;
       y = value.y;
@@ -32,8 +32,8 @@ function Radar() {
   ctxui.fill();
 
   // Данные об окружающих игроках
-  server.users.forEach(function (value, index) {
-    if (value.id != server.id) {
+  Data.server.users.forEach(function (value, index) {
+    if (value.id != Data.server.id) {
       let r = Math.sqrt(Math.pow(Math.abs(value.y-y),2)+Math.pow(Math.abs(value.x-x),2));
       if(r <= 2000) {
         let degree = Math.atan2(value.y-y,value.x-x);
@@ -51,10 +51,10 @@ function Radar() {
 
 // Отрисовка логов о смертях и убийствах
 function DrawLog() {
-  server.death.forEach(function (value, index) {
+  Data.server.death.forEach(function (value, index) {
     ctxui.save();
     let death_name="",killer_name="";
-    server.users.forEach(function (player) {
+    Data.server.users.forEach(function (player) {
       if (player.id == value.killer)
         killer_name = player.name;
       if (player.id == value.death)
@@ -77,7 +77,7 @@ function DrawLog() {
 
 // Отрисовка логов о смертях и убийствах
 function DrawStat() {
-  if (control.key.q) {
+  if (Data.control.key.q) {
   ctxui.save();
   ctxui.beginPath();
   ctxui.lineWidth=3;
@@ -108,11 +108,11 @@ function DrawStat() {
   ctxui.fillText('Kill', game.width*.64, game.height*(.28));
   ctxui.fillText('Death', game.width*.72, game.height*(.28));
 
-  let unsort = server.stats;
+  let unsort = Data.server.stats;
   unsort.sort(sDecrease).forEach(function (value, index) {
     if (index < 10) {
       let name;
-      server.users.forEach(function (val) {
+      Data.server.users.forEach(function (val) {
         if(value.id == val.id) name = val.name;
       });
       ctxui.fillText(index+1, game.width*.24, game.height*(.32+0.043*index));
