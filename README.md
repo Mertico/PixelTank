@@ -17,7 +17,7 @@ Pet-project.
 │   ├── images
 │   ├── js
 │   └── index.html
-└── server 
+└── server
     ├── modules (Bullet, physics etc)
     ├── config.js
     ├── core.js

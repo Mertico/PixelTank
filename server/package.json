@@ -11,6 +11,6 @@
   "devDependencies": {},
   "dependencies": {
     "p2": "^0.7.1",
-    "socket.io": "^2.0.3"
+    "socket.io": "^2.0.4"
   }
 }
