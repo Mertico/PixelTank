@@ -1,0 +1,64 @@
+* {padding: 0; margin: 0;}
+html,body {
+  font-size: 62.5%;
+  font-family: 'Roboto', sans-serif;
+}
+.loading {
+  position: absolute;
+  z-index: 10;
+  height: 100vh;
+  width: 100vw;
+  background: #fafafa;
+  background-image: url('/images/PixelTank.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: default;
+}
+body.active .loading {
+  animation-name: back;
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
+}
+#stage {
+  position: relative;
+}
+canvas { position: absolute; }
+#ui-layer { z-index: 3 }
+#game-layer { z-index: 2 }
+#background-layer { z-index: 1 }
+
+#ui-layer {
+  cursor: crosshair;
+}
+
+#progress {
+    border: 1px solid #2c3e50;
+    border-radius: 13px;
+    height: 20px;
+    width: 300px;
+    padding: 3px;
+    position: absolute;
+    top: 60%;
+    left: calc(50% - 150px);
+}
+#progress--after {
+    content: '';
+    display: block;
+    background: #4fc08d;
+    width: 33%;
+    height: 100%;
+    border-radius: 9px;
+}
+@keyframes back {
+  0% {
+  	opacity: 1;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+  	opacity: 0;
+  	display: none;
+  	z-index: -1;
+  }
+}
