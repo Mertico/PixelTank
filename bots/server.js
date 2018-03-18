@@ -5,7 +5,7 @@ var socketio = require('socket.io-client');
 
 if (cluster.isMaster) {
   // Запуск воркеров по кол-ву потоков минус поток мастера
-  for (var i = 0; i < 2; i++) {
+  for (var i = 0; i < 4; i++) {
     cluster.fork();
   }
   cluster.on('exit', (worker, code, signal) => {
@@ -20,7 +20,8 @@ if (cluster.isMaster) {
     cluster.fork();
   });
 } else {
-  var socket = socketio('http://localhost:3600',{transports: ['websocket']});
+  let port = Math.floor(Math.random() * (3605 - 3600)) + 3600
+  var socket = socketio('http://localhost:'+port,{transports: ['websocket']});
 
   socket.on('connect', function () {
     socket.emit('join', {name: "[Bot "+cluster.worker.id+"]", tank: (Math.random() > .66) ? 'heavy' : (Math.random() > .5) ? 'light' : 'medium'});
@@ -28,10 +29,10 @@ if (cluster.isMaster) {
       console.log('Bot №'+cluster.worker.id+' connect');
     //});
   });
-
   socket.on('disconnect', function () {
     console.log('Bot №'+cluster.worker.id+' disconnect');
   });
+
 
   socket.on('refresh', function (m) {
     var [users,bullets] = InSend(m[0]);

@@ -10,7 +10,9 @@
   "license": "ISC",
   "devDependencies": {},
   "dependencies": {
+    "ioredis": "^3.2.2",
     "p2": "^0.7.1",
-    "socket.io": "^2.0.4"
+    "socket.io": "^2.0.4",
+    "socket.io-redis": "^5.2.0"
   }
 }
