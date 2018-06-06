@@ -117,7 +117,7 @@ if (cluster.isMaster) {
     }
     if (target.r<1500) {
       if (bot.turret.toFixed(1) == target.angle.toFixed(1)) {
-        // mouse.down=true;
+        mouse.down=true;
       }
     }
     socket.emit('refresh', sendControl({mouse : mouse,key :key}));
