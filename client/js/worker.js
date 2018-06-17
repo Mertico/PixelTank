@@ -32,6 +32,8 @@ onmessage = event => {
 
 socket.on('init', function (m) {
   server.stats=m.stats;
+  console.log(m);
+  
   postMessage({
    type: 'init',
    data: {

@@ -1,7 +1,26 @@
 'use strict';
 
-var io = require('socket.io')(3600);
-io.set('transports', ['websocket']);
+const cluster = require('cluster');
+const numCPUs = require('os').cpus().length;
+
+const socketio = require('socket.io');
+const redis = require('ioredis');
+const redisAdapter = require('socket.io-redis');
+
+if (cluster.isMaster) {
+  console.log(`Master ${process.pid} is running`);
+
+  const io = new socketio();
+  const pub = redis.createClient(6379, '127.0.0.1');
+  const sub = redis.createClient(6379, '127.0.0.1');
+  io.adapter(redisAdapter({ pubClient: pub, subClient: sub }));
+
+  for (var i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
+
+
+// io.set('transports', ['websocket']);
 io.noServer = false;
 io.clientTracking = false;
 io.perMessageDeflate = false;
@@ -42,48 +61,64 @@ setInterval(function() {
   counter=0;
 }, 1000);
 */
+// console.log(sub);
 
-io.on('connection', function (socket) {
-  // Обработка полученых от пользователя данных
-  socket.on('refresh', (m) => Control.update(socket.id, m));
-
-  // Вход нового игрока и создание данных о нем
-  socket.on('join', function (m) {
-    // Вывод в лог информации о новом игроке
-    console.log('Join new client: ' + socket.id);
-    // Отправка данных соединения
-    socket.emit('init', {tank: Config.tank, stats: Stats.get, bs: Config.BULLET_SPEED});
-    // Добавление данных нового пользователя
-    User.add(socket.id,m.name,m.tank);
-    Stats.add(socket.id);
-    Control.add(socket.id);
-  });
-
-  // Обработка дисконекта
-  socket.on('disconnect', function (m) {
-    //io.emit('user disconnected');
-    // Удаление данных удаленного игрока
-    io.clients(function(error, clients) {
-      if (error) throw error;
-      let users = User.getList();
-      users.forEach(function (value, index) {
-        let del=true;
-        clients.forEach(function (val) {
-          if (val == value.id) {
-            del=false;
+// sub.subscribe('socket.io#', function (err, count) {
+//   console.log(count);
+// });
+// sub.subscribe('socket.io-request#/#', function (err, count) {
+//   console.log(count);
+// });
+sub.subscribe('refresh', 'join', 'disconnect', function (err, count) {
+  console.log(count);
+});
+sub.on("message", function (channel, message) {
+  // console.log(message);
+  message = JSON.parse(message);
+  switch(channel) {
+    case 'refresh':
+      Control.update(message.id, message.m);
+      break;
+    case 'join':
+      console.log("sub channel " + channel);
+      console.log(message);
+      io.to(message.id)
+      .emit('init', {tank: Config.tank, stats: Stats.get, bs: Config.BULLET_SPEED});
+      // socket.emit('init', {tank: Config.tank, stats: Stats.get, bs: Config.BULLET_SPEED});
+      // Добавление данных нового пользователя
+      User.add(message.id,message.name,message.tank);
+      Stats.add(message.id);
+      Control.add(message.id);
+      break;
+    case 'disconnect':
+      console.log("sub channel " + channel + ": " + message);
+      io.of('/').adapter.clients((error, clients) => {
+        if (error) throw error;
+        let users = User.getList();
+        users.forEach(function (value, index) {
+          let del=true;
+          clients.forEach(function (val) {
+            if (val == value.id) {
+              del=false;
+            }
+          });
+          if(del) {
+            Stats.remove(value.id);
+            User.remove(index);
+            Control.remove(value.id);
           }
         });
-        if(del) {
-          Stats.remove(value.id);
-          User.remove(index);
-          Control.remove(value.id);
-        }
       });
-    });
-    // Вывод в лог информации о дисконекте
-    console.log("Disconnect: " + m);
-  });
+      break;
+    default:
+      // console.log("ERROR!!!!");
+      break;
+  }
 });
+// console.log(io.adapter())
+// io.of('/').adapter.clients((err, clients) => {
+//   console.log(clients); // an array containing all connected socket ids
+// });
 
 // Оптимизация отправляемых данных
 function SendArray(users, bullets) {
@@ -109,4 +144,43 @@ function SendArray(users, bullets) {
     ];
   }
   return array;
+}
+
+
+} else {
+  console.log('Worker '+cluster.worker.id, process.pid, 'started');
+
+  // const clusterRedis = new redis.Cluster([
+  //   {
+  //     port: 6379,
+  //     host: '127.0.0.1'
+  //   }
+  // ]);
+  // io.adapter(redisAdapter({ pubClient: clusterRedis, subClient: clusterRedis }));
+  const io = new socketio(3600+cluster.worker.id-1);
+  const pub = redis.createClient(6379, '127.0.0.1');
+  const sub = redis.createClient(6379, '127.0.0.1');
+  io.adapter(redisAdapter({ pubClient: pub, subClient: sub }));
+  // console.log(io);
+
+  io.on('connection', function (socket) {
+    // Обработка полученых от пользователя данных
+    socket.on('refresh', (m) => pub.publish('refresh', JSON.stringify({id: socket.id, m: m})));
+    // Вход нового игрока и создание данных о нем
+    socket.on('join', function (m) {
+      // Вывод в лог информации о новом игроке
+      console.log('Join new client: ' + socket.id);
+      pub.publish('join', JSON.stringify({id: socket.id, m: m}))
+    });
+
+    // Обработка дисконекта
+    socket.on('disconnect', function (m) {
+      console.log('Disconnect client: ' + socket.id);
+      pub.publish('disconnect', JSON.stringify({id: socket.id, m: m}))
+    });
+  });
+
+  io.on('error', function(){
+    console.log('Worker '+cluster.worker.id, process.pid, 'Error socket')
+  })
 }
