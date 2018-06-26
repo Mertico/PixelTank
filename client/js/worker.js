@@ -1,7 +1,7 @@
 self.importScripts('vendor/socket.io-1.4.5.js');
 //self.importScripts('vendor/p2.js');
 var socket = io('http://localhost:3600/',{transports: ['websocket']});
-//var socket = io('https://ws.mertico.ru/',{transports: ['websocket'], secure: true});
+//var socket = io('https://ws.mertico.pro/',{transports: ['websocket'], secure: true});
 
 var server={
   death:[],
