@@ -4,10 +4,16 @@ var Data = {
   playerName: null,// Логин игрока
   playerTank: null,// Выбраный танк игрока
   tank: null, // Параметры танков
-
+  
   scale: 1, // Коэффицент масштабирования (0.5 - 1.4)
   fps: 60,
-  server: null, // connect
+  server: {
+    death:[],
+    bullets:[],
+    users:[],
+    stats:[],
+    id:0
+  }, // connect
   BULLET_SPEED: null, // Скорость полета снаряда
 
   /*
