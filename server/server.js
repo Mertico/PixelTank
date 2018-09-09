@@ -30,8 +30,7 @@ setInterval(function SendStats() {
 // Отправка данных игроков //sockets
 setInterval(function SendRefresh() {
   process.nextTick(function () {
-    var t = Date.now();
-    io.emit('refresh', [SendArray(User.getList(),Bullet.getList()), t]);
+    io.emit('refresh', SendArray(User.getList(),Bullet.getList()));
   });
 }, 1000/Config.FPS_send);
 /*

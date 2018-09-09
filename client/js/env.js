@@ -4,7 +4,6 @@ var Data = {
   playerName: null,// Логин игрока
   playerTank: null,// Выбраный танк игрока
   tank: null, // Параметры танков
-  
   scale: 1, // Коэффицент масштабирования (0.5 - 1.4)
   fps: 60,
   server: {

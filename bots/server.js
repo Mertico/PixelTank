@@ -21,6 +21,7 @@ if (cluster.isMaster) {
   });
 } else {
   var socket = socketio('http://localhost:3600',{transports: ['websocket']});
+  var lastControl = {};
 
   socket.on('connect', function () {
     socket.emit('join', {name: "[Bot "+cluster.worker.id+"]", tank: (Math.random() > .66) ? 'heavy' : (Math.random() > .5) ? 'light' : 'medium'});
@@ -34,7 +35,7 @@ if (cluster.isMaster) {
   });
 
   socket.on('refresh', function (m) {
-    var [users,bullets] = InSend(m[0]);
+    var [users,bullets] = InSend(m);
     var bot = {
       x:0,
       y:0,
@@ -77,8 +78,6 @@ if (cluster.isMaster) {
         let r = Math.sqrt(Math.pow(Math.abs(users[ui].y-bot.y),2)+Math.pow(Math.abs(users[ui].x-bot.x),2));
         if (target.r > r) {
           // Передвижение танка на величину скорости для стрельбы на опережнение
-          //users[ui].x +=users[ui].speed*Math.cos(users[ui].chassis.angle);
-          //users[ui].y +=users[ui].speed*Math.sin(users[ui].chassis.angle);
           target.x=users[ui].x;
           target.y=users[ui].y;
           target.angle=Math.atan2(users[ui].y-bot.y,users[ui].x-bot.x);
@@ -120,7 +119,11 @@ if (cluster.isMaster) {
         mouse.down=true;
       }
     }
-    socket.emit('refresh', sendControl({mouse : mouse,key :key}));
+    let sendData = sendControl({mouse : mouse,key :key})
+    if (JSON.stringify(sendData) !== JSON.stringify(lastControl)) {
+      lastControl = sendData
+      socket.emit('refresh', sendData);
+    }
   });
 
   function sendControl(control) {

@@ -1,7 +1,7 @@
 self.importScripts('vendor/socket.io-1.4.5.js');
 //self.importScripts('vendor/p2.js');
 var socket = io('http://localhost:3600/',{transports: ['websocket']});
-//var socket = io('https://ws.mertico.pro/',{transports: ['websocket'], secure: true});
+// var socket = io('https://ws.mertico.pro/',{transports: ['websocket'], secure: true});
 
 var server={
   death:[],
@@ -10,22 +10,29 @@ var server={
   stats:[],
   id:0
 };
-var timeStamp=0, startTime=0;
+
+var isConnected = false;
+var lastControl = {};
 
 socket.on('connect', () => { server.id=server.id; });
 
+// Получения собыйтий от MAIN thread
 onmessage = event => {
   var message = event.data;
   switch (message.type) {
     case 'connect':
       //socket.on('connect', function () {
         socket.emit('join', {name: message.data.name, tank: message.data.tank});
+        isConnected = true
         //socket.emit('join', {name: 123, tank: 13});
       //});
       break;
     case 'control':
       //control=message.data.control;
-      socket.emit('refresh', sendControl(message.data.control));
+      if (JSON.stringify(message.data.control) !== JSON.stringify(lastControl) && isConnected) {
+        lastControl = message.data.control
+        socket.emit('refresh', sendControl(message.data.control));
+      }
       break;
   }
 };
@@ -51,17 +58,13 @@ socket.on('stats', function (m) {
 
 
 socket.on('refresh', function (m) {
-  // Проверка временой метки (насколько актуален пакет данных)
-  if(m[1] >= timeStamp) {
-    timeStamp = m[1];
-    [server.users,server.bullets] = InSend(m[0]);
-    postMessage({
-     type: 'refresh',
-     data: {
-       server
-     }
-    });
-  }
+  [server.users,server.bullets] = InSend(m);
+  postMessage({
+    type: 'refresh',
+    data: {
+      server
+    }
+  });
 });
 
 setInterval(() => {
@@ -72,6 +75,7 @@ setInterval(() => {
   });
 },1000);
 
+// Minification
 function sendControl(control) {
   return [
     control.key.w && 1  || // move player
