@@ -1,0 +1,8 @@
+{
+  "name": "@pixeltank/client",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@pixeltank/shared": "workspace:*"
+  }
+}

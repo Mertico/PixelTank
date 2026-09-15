@@ -1,5 +1,7 @@
 .vscode
 .DS_Store
 *.log
-*node_modules
-*package-lock.json
+node_modules/
+dist/
+.build-staging/
+coverage/

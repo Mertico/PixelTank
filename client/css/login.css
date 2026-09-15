@@ -23,7 +23,7 @@
   margin: 0 auto;
 }
 
-container {
+.tank-options {
   margin: 1rem;
   display:flex;
   flex-direction: row;

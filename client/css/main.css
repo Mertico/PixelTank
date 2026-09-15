@@ -22,14 +22,7 @@ body.active .loading {
 #stage {
   position: relative;
 }
-canvas { position: absolute; }
-#ui-layer { z-index: 3 }
-#game-layer { z-index: 2 }
-#background-layer { z-index: 1 }
-
-#ui-layer {
-  cursor: crosshair;
-}
+#game-canvas { display: block; width: 100%; height: 100%; cursor: crosshair; }
 
 #progress {
     border: 1px solid #2c3e50;
@@ -62,3 +55,8 @@ canvas { position: absolute; }
   	z-index: -1;
   }
 }
+
+#connection-status { position: fixed; bottom: 16px; left: 16px; right: 16px; z-index: 100; color: #a52222; background: rgba(255,255,255,.95); font: 16px monospace; padding: 8px; pointer-events: none; }
+#connection-status:empty { display: none; }
+html, body { height: 100%; overflow: hidden; }
+#stage { width: 100%; height: 100%; }

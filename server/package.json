@@ -1,16 +1,12 @@
 {
-  "name": "server",
-  "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
+  "name": "@pixeltank/server",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "start": "node server"
+    "start": "bun src/main.ts"
   },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {},
   "dependencies": {
-    "p2": "^0.7.1",
-    "socket.io": "^2.0.4"
+    "@pixeltank/shared": "workspace:*",
+    "p2": "0.7.1"
   }
 }

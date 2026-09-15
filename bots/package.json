@@ -1,15 +1,11 @@
 {
-  "name": "bots",
-  "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
+  "name": "@pixeltank/bots",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "start": "node server"
+    "start": "bun src/main.ts"
   },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {},
   "dependencies": {
-    "socket.io-client": "^2.0.4"
+    "@pixeltank/shared": "workspace:*"
   }
 }
